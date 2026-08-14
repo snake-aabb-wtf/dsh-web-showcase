@@ -10,6 +10,7 @@ import { MISSION_STEPS } from '../mission/tracker'
 import { useGameStore } from '../store/gameStore'
 import { headingDeg, mToFeet, msToFpm, msToKnots } from '../utils/format'
 import { fmt0 } from '../utils/format'
+import { AttitudeIndicator } from './AttitudeIndicator'
 
 export function HUD(): React.ReactElement {
   const iasRef = useRef<HTMLSpanElement>(null)
@@ -30,6 +31,7 @@ export function HUD(): React.ReactElement {
   const missionListRef = useRef<HTMLDivElement>(null)
 
   const showFps = useGameStore((s) => s.settings.showFps)
+  const view = useGameStore((s) => s.view)
 
   useEffect(() => {
     let raf = 0
@@ -110,22 +112,25 @@ export function HUD(): React.ReactElement {
 
   return (
     <div className="hud">
-      <div className="hud-left">
-        <div className="hud-block">
-          <span className="hud-label">空速</span>
-          <span className="hud-value" ref={iasRef}>0</span>
-          <span className="hud-unit">kt</span>
+      <div className="hud-left-group">
+        <div className="hud-left">
+          <div className="hud-block">
+            <span className="hud-label">空速</span>
+            <span className="hud-value" ref={iasRef}>0</span>
+            <span className="hud-unit">kt</span>
+          </div>
+          <div className="hud-block">
+            <span className="hud-label">高度</span>
+            <span className="hud-value" ref={altRef}>0</span>
+            <span className="hud-unit">ft</span>
+          </div>
+          <div className="hud-block">
+            <span className="hud-label">升降率</span>
+            <span className="hud-value hud-small" ref={vsiRef}>0</span>
+            <span className="hud-unit">ft/min</span>
+          </div>
         </div>
-        <div className="hud-block">
-          <span className="hud-label">高度</span>
-          <span className="hud-value" ref={altRef}>0</span>
-          <span className="hud-unit">ft</span>
-        </div>
-        <div className="hud-block">
-          <span className="hud-label">升降率</span>
-          <span className="hud-value hud-small" ref={vsiRef}>0</span>
-          <span className="hud-unit">ft/min</span>
-        </div>
+        <AttitudeIndicator visible={view === 'chase'} />
       </div>
 
       <div className="hud-right">

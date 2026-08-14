@@ -387,13 +387,34 @@ input[type='range'] {
   font-family: 'Consolas', 'SF Mono', ui-monospace, monospace;
   z-index: 10;
 }
-.hud-left {
+.hud-left-group {
   position: absolute;
   left: 18px;
   top: 18px;
   display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.hud-left {
+  display: flex;
   flex-direction: column;
   gap: 8px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+.hud-attitude {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.hud-attitude canvas {
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45), inset 0 0 8px rgba(0, 0, 0, 0.8);
+}
+.hud-attitude span {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 .hud-right {
