@@ -58,3 +58,7 @@ npm run dev        # http://localhost:5173
 - 在项目目录内提供该项目的 README（简介、技术栈、运行方式）；
 - 更新本文件的项目索引表格，并为新项目添加专节说明；
 - 项目构建产物与依赖（`node_modules/`、`dist/` 等）一律不提交。
+
+## 许可证
+
+本仓库（含其中所有项目）以 [MIT License](./LICENSE) 授权。
