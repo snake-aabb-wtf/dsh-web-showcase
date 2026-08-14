@@ -59,24 +59,28 @@ function fuselageProfile(): THREE.Vector2[] {
   ]
 }
 
-/** 翼型平面形状：x=弦向(机体x)，y=展向(机体y)，半翼展 5.3 m */
+/** 翼型平面形状：x=弦向(机体x)，y=展向(机体y)，全翼展 10.6 m（左右对称，环形绕行避免自交） */
 function wingShape(): THREE.Shape {
   const s = new THREE.Shape()
-  s.moveTo(0.45, 0) // 翼根前缘
-  s.lineTo(-1.1, 0) // 翼根后缘
-  s.lineTo(-0.55, 5.3) // 翼尖后缘
-  s.lineTo(0.35, 5.3) // 翼尖前缘
+  s.moveTo(0.45, 0) // 翼根前缘（中心）
+  s.lineTo(0.35, 5.3) // 右翼尖前缘
+  s.lineTo(-0.55, 5.3) // 右翼尖后缘
+  s.lineTo(-1.1, 0) // 翼根后缘（中心）
+  s.lineTo(-0.55, -5.3) // 左翼尖后缘
+  s.lineTo(0.35, -5.3) // 左翼尖前缘
   s.closePath()
   return s
 }
 
-/** 平尾形状（半展 1.8 m） */
+/** 平尾形状（全展 3.6 m，左右对称，环形绕行避免自交） */
 function hstabShape(): THREE.Shape {
   const s = new THREE.Shape()
-  s.moveTo(0.12, 0)
-  s.lineTo(-0.62, 0)
-  s.lineTo(-0.32, 1.8)
-  s.lineTo(0.02, 1.8)
+  s.moveTo(0.12, 0) // 根部前缘（中心）
+  s.lineTo(0.02, 1.8) // 右翼尖前缘
+  s.lineTo(-0.32, 1.8) // 右翼尖后缘
+  s.lineTo(-0.62, 0) // 根部后缘（中心）
+  s.lineTo(-0.32, -1.8) // 左翼尖后缘
+  s.lineTo(0.02, -1.8) // 左翼尖前缘
   s.closePath()
   return s
 }
