@@ -8,7 +8,9 @@ import { flightEngine } from '../physics/engine'
 import { useGameStore } from '../store/gameStore'
 import { damp } from '../utils/math'
 
-const EYE_OFFSET = new THREE.Vector3(0.32, 0, -0.55) // 飞行员眼位（机体坐标）
+// 飞行员眼位（机体坐标）：抬高并微前移至座舱机头整流罩顶之上，
+// 使机头实体落在视野下部（真实座舱"透过风挡看机头"的观感），避免遮挡正前方。
+const EYE_OFFSET = new THREE.Vector3(0.36, 0, -0.64)
 
 // 相机朝向偏置：three.js 相机视线沿局部 -Z，而飞机"前"沿机体 +X。
 // 用基向量构造 body→camera 旋转：相机右→机体右、相机上→机体上、相机后→机体后，
