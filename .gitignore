@@ -1,0 +1,17 @@
+# 依赖与构建产物（作品集根）
+node_modules/
+dist/
+
+# Vite 缓存
+.vite/
+
+# 测试/运行产物
+artifacts/
+*.log
+*.out.txt
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

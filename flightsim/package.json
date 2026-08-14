@@ -1,0 +1,31 @@
+{
+  "name": "sky172-flight-sim",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "纯前端、可离线运行的高仿真 3D 飞行模拟器（React + Vite + TypeScript + Three.js / R3F，手写六自由度气动物理，Cessna 172 基准）",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "physics:test": "tsx scripts/physicsTest.ts"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.105.6",
+    "@react-three/fiber": "^8.16.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.160.1",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.160.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.4.8"
+  }
+}
