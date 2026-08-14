@@ -10,6 +10,18 @@ import { damp } from '../utils/math'
 
 const EYE_OFFSET = new THREE.Vector3(0.32, 0, -0.55) // 飞行员眼位（机体坐标）
 
+// 相机朝向偏置：three.js 相机视线沿局部 -Z，而飞机"前"沿机体 +X。
+// 用基向量构造 body→camera 旋转：相机右→机体右、相机上→机体上、相机后→机体后，
+// 使相机视线对齐机头方向且上下/左右不颠倒。
+const CAMERA_BODY_TO_CAM = new THREE.Quaternion().setFromRotationMatrix(
+  new THREE.Matrix4().makeBasis(
+    new THREE.Vector3(0, 1, 0), // 相机右 → 机体右
+    new THREE.Vector3(0, 0, -1), // 相机上 → 机体上
+    new THREE.Vector3(-1, 0, 0), // 相机后 → 机体后
+  ),
+)
+const CAMERA_TARGET_Q = new THREE.Quaternion() // 复用临时对象，避免每帧分配
+
 export function CameraRig(): React.ReactElement | null {
   const view = useGameStore((s) => s.view)
   const cameraSmooth = useGameStore((s) => s.settings.cameraSmooth)
@@ -55,10 +67,16 @@ export function CameraRig(): React.ReactElement | null {
       // 座舱视角：眼位 = 机体坐标眼位旋转 + 机体重心位置
       const eye = EYE_OFFSET.clone().applyQuaternion(q).add(new THREE.Vector3(s.position.x, s.position.y, s.position.z))
       camera.position.copy(eye)
-      // 姿态直接跟随（轻微指数平滑，避免高频抖动）
-      camera.quaternion.slerp(q, 1 - Math.exp(-14 * Math.min(delta, 0.1)))
+      // 姿态 = 飞机姿态 ⊗ 相机偏置（机头 +X → 相机视线 -Z），轻微指数平滑
+      CAMERA_TARGET_Q.multiplyQuaternions(q, CAMERA_BODY_TO_CAM)
+      camera.quaternion.slerp(CAMERA_TARGET_Q, 1 - Math.exp(-14 * Math.min(delta, 0.1)))
       cam.fov = damp(cam.fov, 78, 4, delta)
       cam.updateProjectionMatrix()
+
+      // 供测试探针断言相机朝向（视线应水平指向机头方向）
+      const dir = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion)
+      const w = window as unknown as { __camDir?: { x: number; y: number; z: number } }
+      w.__camDir = { x: dir.x, y: dir.y, z: dir.z }
     }
   })
 
