@@ -81,6 +81,20 @@ with sync_playwright() as p:
     check("链条: 摆锤在摆动", h1 and h2 and (h1[0]["x"] != h2[0]["x"] or h1[0]["y"] != h2[0]["y"]),
           f"锤位置 {h1[0]['x']:.0f},{h1[0]['y']:.0f} → {h2[0]['x']:.0f},{h2[0]['y']:.0f}")
     check("链条: 关节数量正确", s1["joints"] == 22 + 1 + 14, f"joints={s1['joints']}")
+    # 稳态后关节不应持续拉长（长链迭代收敛检查）
+    page.wait_for_timeout(2500)
+    err = page.evaluate("""() => {
+        const w = window.__PHYSX.world;
+        let m = 0;
+        for (const j of w.joints) {
+            if (j.constructor.name !== 'DistanceJoint') continue;
+            const wa = j.bodyA.localToWorld(j.anchorLocalA);
+            const wb = j.bodyB.localToWorld(j.anchorLocalB);
+            m = Math.max(m, Math.abs(Math.hypot(wa.x - wb.x, wa.y - wb.y) - j.length));
+        }
+        return m;
+    }""")
+    check("链条: 关节无持续拉长", err < 6, f"maxErr={err:.2f}px")
 
     # ============ 5. 跷跷板 ============
     switch_scene("跷跷板", 1200)

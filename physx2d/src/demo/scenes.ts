@@ -10,6 +10,11 @@ export interface Scene {
   description: string
   /** 场景的世界范围（用于相机对焦） */
   bounds: { minX: number; minY: number; maxX: number; maxY: number }
+  /** 场景级求解迭代声明（缺省用 World 默认 8/3）。
+   *  长关节链（如 22 节链条）的约束求解按链逐级传导，迭代不足时链尾会缓慢拉长（漏沙），
+   *  需要更多速度迭代；普通场景 8/3 足够。 */
+  velocityIterations?: number
+  positionIterations?: number
   build: (world: World) => void
 }
 
@@ -161,6 +166,8 @@ const chain: Scene = {
   name: '链条摆锤',
   description: '距离关节（DistanceJoint）串联的链条 + 摆锤。按住摆锤甩起来！',
   bounds: { minX: -320, minY: -200, maxX: 320, maxY: 660 },
+  velocityIterations: 40,
+  positionIterations: 24,
   build(world) {
     buildArena(world)
     makeBox(world, 0, 622, 560, 16, { static: true })
@@ -172,7 +179,7 @@ const chain: Scene = {
     const links: Body[] = []
     const n = 22
     for (let i = 0; i < n; i++) {
-      const link = makeBox(world, 0, -140 + i * 22, 8, 11, {
+      const link = makeBox(world, 0, -140 + i * 22, 8, 10, {
         hue: 30 + i * 2,
         friction: 0.3,
         density: 1.2,
@@ -182,7 +189,8 @@ const chain: Scene = {
     for (let i = 0; i < n; i++) {
       const a = i === 0 ? anchor : links[i - 1]
       const b = links[i]
-      const joint = new DistanceJoint(a, b, new Vec2(0, -172), new Vec2(0, -140 + i * 22))
+      // 锚点 = 两端刚体各自中心（此前误用固定坐标 (0,-172)，导致除首关节外全部连错）
+      const joint = new DistanceJoint(a, b, a.position.clone(), b.position.clone())
       world.addJoint(joint)
     }
 
@@ -200,7 +208,8 @@ const chain: Scene = {
     }
     for (let i = 0; i < m; i++) {
       const a = i === 0 ? anchor2 : beads[i - 1]
-      world.addJoint(new DistanceJoint(a, beads[i], new Vec2(300, -180), new Vec2(300, -120 + i * 26)))
+      // 锚点 = 两端刚体各自中心（此前误用固定坐标 (300,-180)，导致除首关节外全部连错）
+      world.addJoint(new DistanceJoint(a, beads[i], a.position.clone(), beads[i].position.clone()))
     }
   },
 }

@@ -50,6 +50,11 @@ export default function App() {
     if (!world || !renderer) return
     const scene = SCENES.find((s) => s.id === id) ?? SCENES[0]
     world.clear()
+    // 场景可声明自己的求解迭代数（长关节链需要更多迭代），并同步 UI 滑杆
+    if (scene.velocityIterations) world.settings.velocityIterations = scene.velocityIterations
+    if (scene.positionIterations) world.settings.positionIterations = scene.positionIterations
+    setVelIters(world.settings.velocityIterations)
+    setPosIters(world.settings.positionIterations)
     scene.build(world)
     const b = scene.bounds
     renderer.focusOn(b.minX, b.minY, b.maxX, b.maxY)
@@ -322,8 +327,8 @@ export default function App() {
           <h2>物理参数</h2>
           <Slider label="重力" value={gravity} min={0} max={4000} step={50} onChange={setGravity} format={(v) => `${v}`} />
           <Slider label="时间倍率" value={timeScale} min={0.1} max={3} step={0.1} onChange={setTimeScale} format={(v) => `${v.toFixed(1)}×`} />
-          <Slider label="速度迭代" value={velIters} min={1} max={32} step={1} onChange={setVelIters} format={(v) => `${v}`} />
-          <Slider label="位置迭代" value={posIters} min={1} max={12} step={1} onChange={setPosIters} format={(v) => `${v}`} />
+          <Slider label="速度迭代" value={velIters} min={1} max={64} step={1} onChange={setVelIters} format={(v) => `${v}`} />
+          <Slider label="位置迭代" value={posIters} min={1} max={32} step={1} onChange={setPosIters} format={(v) => `${v}`} />
           <div className="field">
             <label>固定步长</label>
             <select value={fixedDt} onChange={(e) => setFixedDt(Number(e.target.value))}>

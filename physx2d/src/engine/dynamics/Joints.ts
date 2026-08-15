@@ -94,22 +94,44 @@ export class DistanceJoint extends Joint {
   solvePosition(): void {
     const a = this.bodyA
     const b = this.bodyB
-    const cA = Vec2.add(a.position, this.rA)
-    const cB = Vec2.add(b.position, this.rB)
-    const d = Vec2.sub(cB, cA)
+    // 位置迭代期间角度已变：用当前角度重算锚点偏移（不能沿用 prepare 的缓存）
+    a.localToWorld(this.anchorLocalA, this.rA)
+    this.rA.sub(a.position)
+    b.localToWorld(this.anchorLocalB, this.rB)
+    this.rB.sub(b.position)
+
+    const d = Vec2.add(b.position, this.rB)
+    d.sub(a.position).sub(this.rA)
     const dist = d.length()
     if (dist < 1e-9) return
 
     const u = Vec2.scale(d, 1 / dist)
-    const C = clamp(dist - this.length, -0.4, 0.4)
+    // 全量位置修正（Box2D 同款）：不缩放、仅防爆钳制。
+    // 关键：若每轮只修一小部分，链式关节会互相抵消修正（j2 的修正会拉回 j1 刚修好的距离），
+    // 长链条 3 轮位置迭代将永远无法收敛——必须每轮直接修到接近零。
+    const C = clamp(dist - this.length, -20, 20)
+    if (Math.abs(C) < 0.02) return // 容差，避免每帧反复微调
+
     const crA = this.rA.cross(u)
     const crB = this.rB.cross(u)
     const invMass = a.invMass + b.invMass + a.invInertia * crA * crA + b.invInertia * crB * crB
     if (invMass <= 0) return
 
-    const impulse = (-C / invMass) * 0.8
-    applyJointImpulse(a, b, this.rA, this.rB, u, impulse)
+    // 位置级修正：直接改 position/angle，绝不碰 velocity（split impulse 原则，
+    // 否则位置迭代会持续向速度注入能量——链条被"踢"得越来越长）
+    const impulse = -C / invMass
+
+    applyPositionCorrection(a, b, this.rA, this.rB, u, impulse)
+
   }
+}
+
+/** 位置级关节修正：直接移动刚体，不改变速度 */
+function applyPositionCorrection(a: Body, b: Body, rA: Vec2, rB: Vec2, u: Vec2, impulse: number): void {
+  a.position.addScaled(u, -a.invMass * impulse)
+  a.angle -= a.invInertia * rA.cross(u) * impulse
+  b.position.addScaled(u, b.invMass * impulse)
+  b.angle += b.invInertia * rB.cross(u) * impulse
 }
 
 /**
