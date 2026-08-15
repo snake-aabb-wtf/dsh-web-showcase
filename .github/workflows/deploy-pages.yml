@@ -1,11 +1,18 @@
-# 构建 flightsim 并部署到 GitHub Pages（站点根）
+# 构建作品集所有项目并部署到 GitHub Pages（站点根 = 作品集索引页）
+# 结构：/            — 根索引页（index.html，项目卡片）
+#       /flightsim/  — Sky172 飞行模拟器（base './'，可部署于任意子路径）
+#       /physx2d/    — PhysX2D 2D 刚体物理引擎（base './'）
 # 启用：仓库 Settings → Pages → Source 选择 "GitHub Actions"
-name: Deploy flightsim to GitHub Pages
+name: Deploy showcase to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths: ['flightsim/**']
+    paths:
+      - 'flightsim/**'
+      - 'physx2d/**'
+      - 'index.html'
+      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -22,21 +29,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: flightsim/package-lock.json
-      - name: Install dependencies
-        run: npm ci
+      - name: Build flightsim
+        run: |
+          npm ci
+          npm run build
         working-directory: flightsim
-      - name: Type check & build
-        run: npm run build
-        working-directory: flightsim
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: physx2d/package-lock.json
+      - name: Build physx2d
+        run: |
+          npm ci
+          npm run build
+        working-directory: physx2d
+
+      - name: Assemble site
+        run: |
+          mkdir -p site
+          cp index.html site/index.html
+          cp -r flightsim/dist site/flightsim
+          cp -r physx2d/dist site/physx2d
+          ls -R site | head -40
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: flightsim/dist
+          path: site
 
   deploy:
     needs: build

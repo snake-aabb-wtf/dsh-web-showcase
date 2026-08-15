@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DSH 网页作品集</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --panel: #121722;
+    --panel-2: #0e131c;
+    --border: #1e2636;
+    --border-2: #26304a;
+    --text: #c8d3e4;
+    --text-dim: #6d7a92;
+    --accent: #4cc2ff;
+    --amber: #ffbe5a;
+    --green: #63e6a5;
+    --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    background: radial-gradient(1200px 600px at 50% -10%, #131b2a 0%, var(--bg) 60%);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 24px 64px;
+  }
+  header { text-align: center; margin-bottom: 44px; }
+  header .kicker {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  header h1 { font-size: 30px; font-weight: 700; color: #eaf2fb; letter-spacing: 1px; }
+  header p { margin-top: 10px; color: var(--text-dim); font-size: 14px; max-width: 640px; line-height: 1.8; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 960px;
+  }
+  .card {
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--border-2); transform: translateY(-3px); }
+  .card .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 1px;
+  }
+  .card h2 { font-size: 19px; color: #eaf2fb; }
+  .card .desc { font-size: 13px; color: var(--text-dim); line-height: 1.7; flex: 1; }
+  .card .stack { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .card .stack b { color: var(--green); font-weight: 600; }
+  .card .link {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 9px;
+    background: rgba(76, 194, 255, 0.14);
+    border: 1px solid rgba(76, 194, 255, 0.45);
+    color: var(--accent);
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .card .link:hover { background: rgba(76, 194, 255, 0.26); }
+  footer { margin-top: 44px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); line-height: 1.9; text-align: center; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="kicker">DSH WEB SHOWCASE</div>
+    <h1>DeepSeek Harness 网页作品集</h1>
+    <p>由 DeepSeek 搭配 DeepSeek Harness (DSH) 编写的网页与网页游戏作品集。
+       全部项目从零实现核心算法，不依赖现成引擎库。</p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <div class="tag">PROJECT 01 · FLIGHTSIM</div>
+      <h2>Sky172 高仿真 3D 飞行模拟器</h2>
+      <p class="desc">手写六自由度气动物理（升力/阻力/力矩/失速/地面效应），
+         程序化生成地形、跑道、天空与云，Canvas 2D 座舱仪表，支持键盘/鼠标/手柄。</p>
+      <p class="stack"><b>React 18</b> · TypeScript · Vite · <b>Three.js / R3F</b> · zustand</p>
+      <a class="link" href="./flightsim/">打开演示 →</a>
+    </section>
+
+    <section class="card">
+      <div class="tag">PROJECT 02 · PHYSX2D</div>
+      <h2>PhysX2D 2D 刚体物理引擎</h2>
+      <p class="desc">从零实现的 2D 刚体物理引擎：SAT 碰撞检测、空间哈希广相、
+         顺序冲量求解器、距离/鼠标关节、岛屿休眠。七个可交互演示场景。</p>
+      <p class="stack"><b>React 18</b> · TypeScript · Vite · <b>Canvas 2D</b></p>
+      <a class="link" href="./physx2d/">打开演示 →</a>
+    </section>
+  </main>
+
+  <footer>
+    源码与各项目文档见 <a style="color: var(--accent)" href="https://github.com/snake-aabb-wtf/dsh-web-showcase">github.com/snake-aabb-wtf/dsh-web-showcase</a><br />
+    MIT License
+  </footer>
+</body>
+</html>
