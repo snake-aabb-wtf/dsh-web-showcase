@@ -9,6 +9,7 @@
 | --- | --- | --- | --- | --- |
 | [flightsim](./flightsim) | Sky172 高仿真 3D 飞行模拟器：手写六自由度气动物理、程序化场景与座舱仪表 | React 18, TypeScript, Vite 5, Three.js / R3F 8, zustand | 进入 `flightsim` 后 `npm install` → `npm run dev` | 本地 `http://localhost:5173`；在线预览 <https://snake-aabb-wtf.github.io/dsh-web-showcase/flightsim/> |
 | [physx2d](./physx2d) | PhysX2D 2D 刚体物理引擎：手写 SAT 碰撞检测、顺序冲量求解器、距离/鼠标关节与岛屿休眠 | React 18, TypeScript, Vite 6, Canvas 2D | 进入 `physx2d` 后 `npm install` → `npm run dev` | 本地 `http://localhost:5173`；在线预览 <https://snake-aabb-wtf.github.io/dsh-web-showcase/physx2d/> |
+| [clothsim](./clothsim) | 布料物理仿真：从零实现的 3D 布料物理引擎——PBD 位置动力学求解 1681 粒子 9678 约束，原生 WebGL2 厚板渲染，鼠标拖拽撕扯，可选前置摄像头手势隔空抓取 | React 19, TypeScript, Vite 6, WebGL2, MediaPipe Tasks Vision | 进入 `clothsim` 后 `npm install` → `npm run dev` | 本地 `http://localhost:5173`；在线预览 <https://snake-aabb-wtf.github.io/dsh-web-showcase/clothsim/> |
 
 > 站点根 <https://snake-aabb-wtf.github.io/dsh-web-showcase/> 为作品集索引页（`index.html`），
 > 由 GitHub Actions 构建各项目后统一部署（见 `.github/workflows/deploy-pages.yml`）。
